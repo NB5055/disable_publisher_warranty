@@ -33,17 +33,7 @@ def _warranty_crons(env):
 
 def post_init_hook(*args):
     env = _env(args)
-    enterprise = env["ir.module.module"].search(
-        [("name", "=", _ENTERPRISE_SENTINEL), ("state", "=", "installed")], limit=1
-    )
-    if enterprise:
-        # Quitar la telemetría de una base Enterprise sería eludir la validación
-        # de licencia: este módulo NO se instala ahí.
-        raise UserError(
-            "disable_publisher_warranty es solo para instancias Community. "
-            "Esta base tiene Odoo Enterprise instalado (web_enterprise), "
-            "asi que la instalacion se cancela."
-        )
+    
     for cron in _warranty_crons(env):
         cron.active = False
         _logger.info("disable_publisher_warranty: cron desactivado: %s", cron.name)
